@@ -29,20 +29,50 @@ class Tree
 // -------------------------------------------------------------
    public Node find(int key)      // find node with given key
       {                           // (assumes non-empty tree)
-      
+         Node current = root;
 
-
-                  // found it
+         while (current != null) {
+            if (current.iData == key)
+               return current;
+            else if (key < current.iData)
+               current = current.leftChild;
+            else
+               current = current.rightChild;
+         }
+         return null;
+         // found it
       }  // end find()
 // -------------------------------------------------------------
    public void insert(int id, double dd) //this method inserts a node of (id and dd) into the tree. (We are consider a BINARY SEARCH TREE by iData)
       {
-         
+         Node newNode = new Node();
+         newNode.iData = id;
+         newNode.dData = dd;
 
+         if (root == null) {
+            root = newNode;
+            return;
+         }
 
+         Node current = root;
 
-
-
+         while (current != null)
+         {
+            if (id < current.iData) {
+                  if (current.leftChild == null) {
+                     current.leftChild = newNode;
+                     return;
+                  }
+                  current = current.leftChild;
+            }
+            else {
+                  if (current.rightChild == null) {
+                     current.rightChild = newNode;
+                     return;
+                  }
+                  current = current.rightChild;
+            }
+         }
       }  // end insert()
 //////////////////////////////////////////////////////
 
@@ -91,15 +121,91 @@ class Tree
 // -------------------------------------------------------------
    public boolean delete(int key) // delete node with given key (iData) (if there are multiple nodes match key with iData you have to delete all of them.
       {                           // (assumes non-empty list)
+         boolean found = false;
       
-
-
-                    
-
-
-
-
-
+         while (find(key) != null) {
+            found = true;
+      
+            Node current = root;
+            Node parent = null;
+            boolean isLeftChild = false;
+      
+            // find
+            while (current != null && current.iData != key) {
+               parent = current;
+            
+               if (key < current.iData) {
+                  isLeftChild = true;
+                  current = current.leftChild;
+               }
+               else {
+                  isLeftChild = false;
+                  current = current.rightChild;
+               }
+            }
+      
+            // case 1, leaf
+            if (current.leftChild == null && current.rightChild == null) {
+               if (current == root) {
+                  root = null;
+               }
+               else if (isLeftChild) {
+                  parent.leftChild = null;
+               }
+               else {
+                  parent.rightChild = null;
+               }
+            }
+      
+            // case 2, left child only
+            else if (current.rightChild == null) {
+               if (current == root) {
+                  root = current.leftChild;
+               }
+               else if (isLeftChild) {
+                  parent.leftChild = current.leftChild;
+               }
+               else {
+                  parent.rightChild = current.leftChild;
+               }
+            }
+      
+            // case 3, right child only
+            else if (current.leftChild == null) {
+               if (current == root) {
+                  root = current.rightChild;
+               }
+               else if (isLeftChild) {
+                  parent.leftChild = current.rightChild;
+               }
+               else {
+                  parent.rightChild = current.rightChild;
+               }
+            }
+      
+            // case 4, two children
+            else {
+               Node u = current;
+               Node v = current.rightChild;
+      
+               while (v.leftChild != null) {
+                  u = v;
+                  v = v.leftChild;
+               }
+      
+               current.iData = v.iData;
+               current.dData = v.dData;
+      
+               if (u == current) {
+                  u.rightChild = v.rightChild;
+               }
+               else {
+                  u.leftChild = v.rightChild;
+               }
+            }
+         }
+      
+         return found;
       }  // end delete()
 
 // -------------------------------------------------------------
