@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Compiled/serialized Java artifacts
+*.class
+*.ser
